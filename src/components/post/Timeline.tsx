@@ -1,0 +1,100 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { Post } from "@/lib/types";
+import PostCard from "./PostCard";
+import { createClient } from "@/lib/supabase/client";
+
+interface TimelineProps {
+  initialPosts: Post[];
+}
+
+export default function Timeline({ initialPosts }: TimelineProps) {
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [votes, setVotes] = useState<Record<string, "a" | "b">>({});
+  const supabase = createClient();
+
+  // Refresh posts periodically to update expiry states
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const { data } = await supabase
+        .from("posts")
+        .select("*")
+        .gte("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (data) {
+        setPosts(data as Post[]);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [supabase]);
+
+  // Subscribe to realtime updates
+  useEffect(() => {
+    const channel = supabase
+      .channel("posts-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "posts" },
+        (payload) => {
+          setPosts((prev) => [payload.new as Post, ...prev]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "posts" },
+        (payload) => {
+          setPosts((prev) =>
+            prev.map((p) =>
+              p.id === (payload.new as Post).id ? (payload.new as Post) : p
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
+  const handleVote = useCallback(
+    async (postId: string, choice: "a" | "b") => {
+      if (votes[postId]) return;
+
+      setVotes((prev) => ({ ...prev, [postId]: choice }));
+
+      await fetch("/api/votes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post_id: postId, choice }),
+      });
+    },
+    [votes]
+  );
+
+  if (posts.length === 0) {
+    return (
+      <div className="text-center py-16 text-muted">
+        <p className="text-lg">まだ投稿がありません</p>
+        <p className="text-sm mt-2">最初の迷いを投稿してみましょう</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          votedChoice={votes[post.id] ?? null}
+          onVote={handleVote}
+        />
+      ))}
+    </div>
+  );
+}
