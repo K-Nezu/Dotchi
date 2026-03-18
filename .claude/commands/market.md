@@ -1,0 +1,1 @@
+marketerスキルを使って、Dotchiのグロース・集客施策を提案してください。$ARGUMENTS

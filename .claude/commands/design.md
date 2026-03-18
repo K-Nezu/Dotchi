@@ -1,0 +1,1 @@
+ui-advisorスキルを使って、UIデザインの改善を提案してください。$ARGUMENTS

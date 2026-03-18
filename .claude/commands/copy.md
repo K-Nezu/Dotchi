@@ -1,0 +1,1 @@
+copywriterスキルを使って、Dotchiの文言・コピーを提案してください。$ARGUMENTS
