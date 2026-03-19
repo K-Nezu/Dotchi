@@ -17,7 +17,7 @@ export default function VoteButton({
     return (
       <button
         onClick={onClick}
-        className="relative aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary active:scale-95 transition-all"
+        className="relative aspect-square rounded-xl overflow-hidden border border-border hover:border-foreground/30 active:scale-[0.98] transition-all duration-200"
       >
         <Image
           src={imageUrl}
@@ -33,9 +33,9 @@ export default function VoteButton({
   return (
     <button
       onClick={onClick}
-      className="aspect-square rounded-xl bg-gradient-to-br from-primary-light/40 to-secondary/40 flex items-center justify-center p-4 text-center font-medium text-foreground border-2 border-transparent hover:border-primary active:scale-95 transition-all"
+      className="aspect-square rounded-xl bg-neutral-50 flex items-center justify-center p-5 text-center font-medium text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-100 active:scale-[0.98] transition-all duration-200"
     >
-      <span className="line-clamp-3">{label}</span>
+      <span className="line-clamp-3 text-sm leading-relaxed">{label}</span>
     </button>
   );
 }

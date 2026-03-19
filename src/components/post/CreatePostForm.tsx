@@ -52,16 +52,16 @@ export default function CreatePostForm() {
       : imageA != null && imageB != null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {/* Mode Toggle */}
-      <div className="flex gap-2 bg-primary-light/20 rounded-full p-1">
+      <div className="flex gap-1 bg-neutral-100 rounded-lg p-1">
         <button
           type="button"
           onClick={() => setMode("text")}
-          className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
             mode === "text"
-              ? "bg-primary text-white"
-              : "text-foreground hover:bg-primary-light/30"
+              ? "bg-white text-foreground shadow-sm"
+              : "text-muted hover:text-foreground"
           }`}
         >
           テキスト
@@ -69,10 +69,10 @@ export default function CreatePostForm() {
         <button
           type="button"
           onClick={() => setMode("image")}
-          className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
             mode === "image"
-              ? "bg-primary text-white"
-              : "text-foreground hover:bg-primary-light/30"
+              ? "bg-white text-foreground shadow-sm"
+              : "text-muted hover:text-foreground"
           }`}
         >
           画像
@@ -87,9 +87,9 @@ export default function CreatePostForm() {
           onChange={(e) => setQuestion(e.target.value)}
           maxLength={MAX_QUESTION_LENGTH}
           placeholder="質問を添える（任意）例: 今日のデートどっち？"
-          className="w-full rounded-xl border border-primary-light/30 bg-card px-4 py-3 text-sm focus:outline-none focus:border-primary"
+          className="w-full rounded-lg border border-border bg-white px-4 py-3.5 text-sm placeholder:text-muted/60 focus:outline-none focus:border-foreground/40 transition-colors"
         />
-        <p className="text-xs text-muted text-right mt-1">
+        <p className="text-xs text-muted text-right mt-1.5">
           {question.length}/{MAX_QUESTION_LENGTH}
         </p>
       </div>
@@ -99,28 +99,28 @@ export default function CreatePostForm() {
         {mode === "text" ? (
           <>
             <div>
-              <label className="block text-sm text-muted mb-1">選択肢 A</label>
+              <label className="block text-sm font-medium text-foreground mb-2">選択肢 A</label>
               <textarea
                 value={optionA}
                 onChange={(e) => setOptionA(e.target.value)}
                 maxLength={MAX_OPTION_TEXT_LENGTH}
                 placeholder="こっち？"
-                className="w-full rounded-xl border border-primary-light/30 bg-card p-3 text-sm resize-none h-24 focus:outline-none focus:border-primary"
+                className="w-full rounded-lg border border-border bg-white p-3.5 text-sm resize-none h-28 placeholder:text-muted/60 focus:outline-none focus:border-foreground/40 transition-colors"
               />
-              <p className="text-xs text-muted text-right">
+              <p className="text-xs text-muted text-right mt-1">
                 {optionA.length}/{MAX_OPTION_TEXT_LENGTH}
               </p>
             </div>
             <div>
-              <label className="block text-sm text-muted mb-1">選択肢 B</label>
+              <label className="block text-sm font-medium text-foreground mb-2">選択肢 B</label>
               <textarea
                 value={optionB}
                 onChange={(e) => setOptionB(e.target.value)}
                 maxLength={MAX_OPTION_TEXT_LENGTH}
                 placeholder="あっち？"
-                className="w-full rounded-xl border border-primary-light/30 bg-card p-3 text-sm resize-none h-24 focus:outline-none focus:border-primary"
+                className="w-full rounded-lg border border-border bg-white p-3.5 text-sm resize-none h-28 placeholder:text-muted/60 focus:outline-none focus:border-foreground/40 transition-colors"
               />
-              <p className="text-xs text-muted text-right">
+              <p className="text-xs text-muted text-right mt-1">
                 {optionB.length}/{MAX_OPTION_TEXT_LENGTH}
               </p>
             </div>
@@ -128,8 +128,8 @@ export default function CreatePostForm() {
         ) : (
           <>
             <div>
-              <label className="block text-sm text-muted mb-1">画像 A</label>
-              <label className="block aspect-square rounded-xl border-2 border-dashed border-primary-light/50 bg-card hover:border-primary cursor-pointer flex items-center justify-center overflow-hidden">
+              <label className="block text-sm font-medium text-foreground mb-2">画像 A</label>
+              <label className="block aspect-square rounded-lg border-2 border-dashed border-border bg-neutral-50 hover:border-foreground/30 cursor-pointer flex items-center justify-center overflow-hidden transition-colors">
                 {imageA ? (
                   <img
                     src={URL.createObjectURL(imageA)}
@@ -137,7 +137,7 @@ export default function CreatePostForm() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-3xl text-muted">+</span>
+                  <span className="text-2xl text-muted/40">+</span>
                 )}
                 <input
                   type="file"
@@ -148,8 +148,8 @@ export default function CreatePostForm() {
               </label>
             </div>
             <div>
-              <label className="block text-sm text-muted mb-1">画像 B</label>
-              <label className="block aspect-square rounded-xl border-2 border-dashed border-primary-light/50 bg-card hover:border-primary cursor-pointer flex items-center justify-center overflow-hidden">
+              <label className="block text-sm font-medium text-foreground mb-2">画像 B</label>
+              <label className="block aspect-square rounded-lg border-2 border-dashed border-border bg-neutral-50 hover:border-foreground/30 cursor-pointer flex items-center justify-center overflow-hidden transition-colors">
                 {imageB ? (
                   <img
                     src={URL.createObjectURL(imageB)}
@@ -157,7 +157,7 @@ export default function CreatePostForm() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-3xl text-muted">+</span>
+                  <span className="text-2xl text-muted/40">+</span>
                 )}
                 <input
                   type="file"
@@ -175,7 +175,7 @@ export default function CreatePostForm() {
       <button
         type="submit"
         disabled={!isValid || isSubmitting}
-        className="w-full py-3 rounded-full bg-primary text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-light transition-colors"
+        className="w-full py-3.5 rounded-lg bg-foreground text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-foreground/80 transition-colors"
       >
         {isSubmitting ? "投稿中..." : "5分間だけ世界に聞く"}
       </button>

@@ -25,7 +25,6 @@ export default function ResultBar({
   const [showBadge, setShowBadge] = useState(false);
 
   useEffect(() => {
-    // Animate percentage from 0 to target
     const duration = 1200;
     const steps = 40;
     const stepTime = duration / steps;
@@ -34,14 +33,12 @@ export default function ResultBar({
     const timer = setInterval(() => {
       current++;
       const progress = current / steps;
-      // Ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplayPercentage(Math.round(targetPercentage * eased));
 
       if (current >= steps) {
         setDisplayPercentage(targetPercentage);
         clearInterval(timer);
-        // Show badge after gauge animation completes
         setShowBadge(true);
       }
     }, stepTime);
@@ -49,11 +46,13 @@ export default function ResultBar({
     return () => clearInterval(timer);
   }, [targetPercentage]);
 
+  const winnerClass = isWinner ? "" : "opacity-50 grayscale-[30%]";
+
   return (
     <div
-      className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-        isSelected ? "border-primary" : "border-transparent"
-      }`}
+      className={`relative rounded-xl overflow-hidden border-2 transition-all duration-500 ${
+        isSelected ? "border-foreground" : "border-transparent"
+      } ${winnerClass}`}
     >
       {imageUrl ? (
         <div className="relative aspect-square">
@@ -64,40 +63,46 @@ export default function ResultBar({
             className="object-cover"
             sizes="(max-width: 768px) 50vw, 256px"
           />
-          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white">
-            <span className="text-3xl font-bold tabular-nums">
+          <div className={`absolute inset-0 flex flex-col items-center justify-center text-white ${
+            isWinner ? "bg-black/30" : "bg-black/50"
+          }`}>
+            <span className={`font-bold tabular-nums ${
+              isWinner ? "text-4xl" : "text-2xl text-white/70"
+            }`}>
               {displayPercentage}%
             </span>
-            <span className="text-xs mt-1">{count}票</span>
           </div>
-          {/* Gauge overlay from bottom */}
-          <div
-            className="absolute bottom-0 left-0 right-0 bg-white/20 transition-all duration-1000 ease-out"
-            style={{ height: `${displayPercentage}%` }}
-          />
+          {isWinner && (
+            <div
+              className="absolute bottom-0 left-0 right-0 bg-primary/25 transition-all duration-1000 ease-out"
+              style={{ height: `${displayPercentage}%` }}
+            />
+          )}
         </div>
       ) : (
-        <div className="aspect-square bg-gradient-to-br from-primary-light/40 to-secondary/40 flex flex-col items-center justify-center p-4 relative">
-          <p className="text-sm font-medium text-foreground mb-2 line-clamp-2 text-center relative z-10">
+        <div className="aspect-square bg-neutral-50 flex flex-col items-center justify-center p-4 relative">
+          <p className={`text-sm font-medium mb-2 line-clamp-2 text-center relative z-10 ${
+            isWinner ? "text-foreground" : "text-muted"
+          }`}>
             {label}
           </p>
-          <span className="text-2xl font-bold text-foreground tabular-nums relative z-10">
+          <span className={`font-bold tabular-nums relative z-10 ${
+            isWinner ? "text-3xl text-foreground" : "text-xl text-muted"
+          }`}>
             {displayPercentage}%
           </span>
-          <span className="text-xs text-muted mt-1 relative z-10">
-            {count}票
-          </span>
-          {/* Gauge fill from bottom */}
-          <div
-            className="absolute bottom-0 left-0 right-0 bg-primary/10 transition-all duration-1000 ease-out"
-            style={{ height: `${displayPercentage}%` }}
-          />
+          {isWinner && (
+            <div
+              className="absolute bottom-0 left-0 right-0 bg-primary/8 transition-all duration-1000 ease-out"
+              style={{ height: `${displayPercentage}%` }}
+            />
+          )}
         </div>
       )}
-      {/* Winner badge with fade-in */}
+      {/* Winner badge */}
       {isWinner && total > 0 && (
         <div
-          className={`absolute top-2 right-2 bg-accent text-foreground text-xs font-bold px-2 py-0.5 rounded-full transition-all duration-500 ${
+          className={`absolute top-2 right-2 bg-primary text-white text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-500 ${
             showBadge
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-2"
@@ -106,9 +111,9 @@ export default function ResultBar({
           多数派
         </div>
       )}
-      {/* User's choice indicator */}
+      {/* User's choice */}
       {isSelected && showBadge && (
-        <div className="absolute bottom-2 left-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full animate-fade-in">
+        <div className="absolute bottom-2 left-2 bg-foreground text-white text-xs px-2 py-0.5 rounded-full animate-fade-in">
           あなた
         </div>
       )}

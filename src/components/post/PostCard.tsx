@@ -4,6 +4,7 @@ import { Post } from "@/lib/types";
 import ProgressBar from "@/components/ui/ProgressBar";
 import VoteButton from "@/components/post/VoteButton";
 import ResultBar from "@/components/post/ResultBar";
+import WaitingOverlay from "@/components/post/WaitingOverlay";
 import ShareButton from "@/components/post/ShareButton";
 import DevTools from "@/components/post/DevTools";
 
@@ -14,46 +15,32 @@ interface PostCardProps {
   onPostRemoved?: (postId: string) => void;
 }
 
-function getResultReaction(countA: number, countB: number): string | null {
-  const total = countA + countB;
-  if (total === 0) return null;
-
-  const winnerPct = Math.round((Math.max(countA, countB) / total) * 100);
-
-  if (winnerPct >= 80) return "圧倒的！";
-  if (winnerPct >= 65) return "はっきり決まった！";
-  if (winnerPct <= 55) return "接戦！";
-  return null;
-}
-
 export default function PostCard({ post, votedChoice, onVote, onPostRemoved }: PostCardProps) {
   const isExpired =
     post.is_expired || new Date(post.expires_at).getTime() <= Date.now();
-  const showResults = isExpired || votedChoice != null;
+  const hasVoted = votedChoice != null;
+  const showResults = isExpired;
+  const showWaiting = hasVoted && !isExpired;
   const total = post.vote_count_a + post.vote_count_b;
-  const reaction = isExpired ? getResultReaction(post.vote_count_a, post.vote_count_b) : null;
 
   return (
-    <div className="bg-card rounded-2xl shadow-sm border border-primary-light/20 overflow-hidden">
-      <div className="p-4">
+    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <div className="px-5 pt-5 pb-3">
         {/* Question */}
         {post.question && (
-          <p className="text-sm font-medium text-foreground text-center mb-2">
+          <p className="text-base font-semibold text-foreground mb-3">
             {post.question}
           </p>
         )}
         {!isExpired && <ProgressBar createdAt={post.created_at} />}
         {isExpired && (
-          <div className="text-center mb-2">
-            <p className="text-xs text-muted">投票終了</p>
-            {reaction && (
-              <p className="text-sm font-bold text-primary mt-0.5">{reaction}</p>
-            )}
+          <div className="mb-1">
+            <span className="text-xs text-muted">投票終了</span>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 px-4 pb-2">
+      <div className="grid grid-cols-2 gap-2.5 px-5 pb-3">
         {showResults ? (
           <>
             <ResultBar
@@ -73,6 +60,14 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved }: P
               isSelected={votedChoice === "b"}
             />
           </>
+        ) : showWaiting ? (
+          <WaitingOverlay
+            imageUrlA={post.option_a_image_url}
+            imageUrlB={post.option_b_image_url}
+            labelA={post.mode === "text" ? post.option_a_text! : "A"}
+            labelB={post.mode === "text" ? post.option_b_text! : "B"}
+            votedChoice={votedChoice!}
+          />
         ) : (
           <>
             <VoteButton
@@ -89,11 +84,32 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved }: P
         )}
       </div>
 
+      {/* Waiting wave animation */}
+      {showWaiting && (
+        <div className="px-5 pb-4 pt-1">
+          <div className="flex items-center justify-center gap-1.5 py-3">
+            <div className="flex items-center gap-[3px]">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-[3px] rounded-full bg-gradient-to-t from-primary to-secondary animate-wave"
+                  style={{
+                    animationDelay: `${i * 0.08}s`,
+                    height: "4px",
+                  }}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-muted ml-2">開票を待っています...</span>
+          </div>
+        </div>
+      )}
+
       {/* Footer: total votes + share (when expired) */}
       {isExpired && total > 0 && (
-        <div className="px-4 pb-3 pt-1 space-y-2">
-          <p className="text-xs text-muted text-center">
-            {total}人が答えました
+        <div className="px-5 pb-4 pt-1 space-y-3">
+          <p className="text-xs text-muted">
+            {total}人が回答
           </p>
           <ShareButton post={post} />
         </div>

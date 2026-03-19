@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf7f5;
-  --foreground: #2d2d2d;
-  --primary: #a78bfa;
-  --primary-light: #c4b5fd;
-  --secondary: #f9a8d4;
-  --accent: #67e8f9;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --primary: #e11d48;
+  --primary-light: #fecdd3;
+  --secondary: #f43f5e;
+  --accent: #e11d48;
   --card: #ffffff;
-  --muted: #9ca3af;
+  --muted: #717171;
+  --border: #ebebeb;
 }
 
 @theme inline {
@@ -20,6 +21,7 @@
   --color-accent: var(--accent);
   --color-card: var(--card);
   --color-muted: var(--muted);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -27,7 +29,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 @keyframes fade-in {
@@ -43,4 +46,17 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.5s ease-out forwards;
+}
+
+@keyframes wave {
+  0%, 100% {
+    height: 4px;
+  }
+  50% {
+    height: 20px;
+  }
+}
+
+.animate-wave {
+  animation: wave 1.2s ease-in-out infinite;
 }

@@ -45,13 +45,13 @@ export default function ShareButton({ post }: ShareButtonProps) {
     <div className="flex gap-2">
       <button
         onClick={handleShare}
-        className="flex-1 bg-foreground text-card text-sm font-medium py-2.5 rounded-xl hover:opacity-90 transition-opacity"
+        className="flex-1 bg-foreground text-white text-sm font-medium py-2.5 rounded-lg hover:bg-foreground/80 transition-colors"
       >
         結果をシェア
       </button>
       <button
         onClick={() => window.open(getXShareUrl(), "_blank", "noopener,noreferrer")}
-        className="flex items-center justify-center w-11 h-11 bg-foreground text-card rounded-xl hover:opacity-90 transition-opacity"
+        className="flex items-center justify-center w-11 h-11 border border-border text-foreground rounded-lg hover:bg-neutral-50 transition-colors"
         aria-label="Xでシェア"
       >
         <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">

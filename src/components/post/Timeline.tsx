@@ -80,15 +80,15 @@ export default function Timeline({ initialPosts }: TimelineProps) {
 
   if (posts.length === 0) {
     return (
-      <div className="text-center py-16 text-muted">
-        <p className="text-lg">まだ投稿がありません</p>
-        <p className="text-sm mt-2">最初の迷いを投稿してみましょう</p>
+      <div className="text-center py-20 text-muted">
+        <p className="text-base font-medium text-foreground/60">まだ投稿がありません</p>
+        <p className="text-sm mt-2 text-muted">最初の迷いを投稿してみましょう</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {posts.map((post) => (
         <PostCard
           key={post.id}

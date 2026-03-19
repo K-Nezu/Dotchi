@@ -21,7 +21,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="max-w-lg mx-auto px-4 py-6">
+      <main className="max-w-xl mx-auto px-5 py-8">
         <Timeline initialPosts={(posts as any[]) ?? []} />
       </main>
     </div>
