@@ -29,7 +29,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let title: string;
   let description: string;
 
-  if (post.mode === "text") {
+  if (post.question) {
+    title = `${post.question} - Dotchi`;
+  } else if (post.mode === "text") {
     title = `${post.option_a_text} vs ${post.option_b_text} - Dotchi`;
   } else {
     title = "どっちがいい？ - Dotchi";

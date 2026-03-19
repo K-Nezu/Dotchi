@@ -5,11 +5,13 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import VoteButton from "@/components/post/VoteButton";
 import ResultBar from "@/components/post/ResultBar";
 import ShareButton from "@/components/post/ShareButton";
+import DevTools from "@/components/post/DevTools";
 
 interface PostCardProps {
   post: Post;
   votedChoice?: "a" | "b" | null;
   onVote?: (postId: string, choice: "a" | "b") => void;
+  onPostRemoved?: (postId: string) => void;
 }
 
 function getResultReaction(countA: number, countB: number): string | null {
@@ -24,7 +26,7 @@ function getResultReaction(countA: number, countB: number): string | null {
   return null;
 }
 
-export default function PostCard({ post, votedChoice, onVote }: PostCardProps) {
+export default function PostCard({ post, votedChoice, onVote, onPostRemoved }: PostCardProps) {
   const isExpired =
     post.is_expired || new Date(post.expires_at).getTime() <= Date.now();
   const showResults = isExpired || votedChoice != null;
@@ -34,6 +36,12 @@ export default function PostCard({ post, votedChoice, onVote }: PostCardProps) {
   return (
     <div className="bg-card rounded-2xl shadow-sm border border-primary-light/20 overflow-hidden">
       <div className="p-4">
+        {/* Question */}
+        {post.question && (
+          <p className="text-sm font-medium text-foreground text-center mb-2">
+            {post.question}
+          </p>
+        )}
         {!isExpired && <ProgressBar createdAt={post.created_at} />}
         {isExpired && (
           <div className="text-center mb-2">
@@ -90,6 +98,9 @@ export default function PostCard({ post, votedChoice, onVote }: PostCardProps) {
           <ShareButton post={post} />
         </div>
       )}
+
+      {/* Dev/test tools */}
+      <DevTools post={post} isExpired={isExpired} onPostRemoved={onPostRemoved} />
     </div>
   );
 }

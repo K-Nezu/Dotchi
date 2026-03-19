@@ -3,6 +3,7 @@ export type PostMode = "image" | "text";
 export interface Post {
   id: string;
   mode: PostMode;
+  question: string | null;
   option_a_text: string | null;
   option_b_text: string | null;
   option_a_image_url: string | null;

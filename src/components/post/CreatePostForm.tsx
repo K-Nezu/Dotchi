@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PostMode } from "@/lib/types";
-import { MAX_OPTION_TEXT_LENGTH } from "@/lib/constants";
+import { MAX_OPTION_TEXT_LENGTH, MAX_QUESTION_LENGTH } from "@/lib/constants";
 
 export default function CreatePostForm() {
   const router = useRouter();
   const [mode, setMode] = useState<PostMode>("text");
+  const [question, setQuestion] = useState("");
   const [optionA, setOptionA] = useState("");
   const [optionB, setOptionB] = useState("");
   const [imageA, setImageA] = useState<File | null>(null);
@@ -21,6 +22,7 @@ export default function CreatePostForm() {
     try {
       const formData = new FormData();
       formData.append("mode", mode);
+      if (question.trim()) formData.append("question", question.trim());
 
       if (mode === "text") {
         formData.append("option_a_text", optionA);
@@ -75,6 +77,21 @@ export default function CreatePostForm() {
         >
           画像
         </button>
+      </div>
+
+      {/* Question */}
+      <div>
+        <input
+          type="text"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          maxLength={MAX_QUESTION_LENGTH}
+          placeholder="質問を添える（任意）例: 今日のデートどっち？"
+          className="w-full rounded-xl border border-primary-light/30 bg-card px-4 py-3 text-sm focus:outline-none focus:border-primary"
+        />
+        <p className="text-xs text-muted text-right mt-1">
+          {question.length}/{MAX_QUESTION_LENGTH}
+        </p>
       </div>
 
       {/* Options */}

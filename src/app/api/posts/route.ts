@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { POST_DURATION_MS, MAX_OPTION_TEXT_LENGTH } from "@/lib/constants";
+import { POST_DURATION_MS, MAX_OPTION_TEXT_LENGTH, MAX_QUESTION_LENGTH } from "@/lib/constants";
 import { PostMode } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
@@ -10,6 +10,11 @@ export async function POST(request: NextRequest) {
   const mode = formData.get("mode") as PostMode;
   if (!mode || !["text", "image"].includes(mode)) {
     return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
+  }
+
+  const question = (formData.get("question") as string)?.trim() || null;
+  if (question && question.length > MAX_QUESTION_LENGTH) {
+    return NextResponse.json({ error: "Question too long" }, { status: 400 });
   }
 
   const now = new Date();
@@ -76,6 +81,7 @@ export async function POST(request: NextRequest) {
     .from("posts")
     .insert({
       mode,
+      question,
       option_a_text: optionAText,
       option_b_text: optionBText,
       option_a_image_url: optionAImageUrl,

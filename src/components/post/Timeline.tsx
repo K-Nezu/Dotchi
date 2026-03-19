@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Post } from "@/lib/types";
 import PostCard from "./PostCard";
 import { createClient } from "@/lib/supabase/client";
+import { TIMELINE_RETENTION_MS } from "@/lib/constants";
 
 interface TimelineProps {
   initialPosts: Post[];
@@ -17,10 +18,11 @@ export default function Timeline({ initialPosts }: TimelineProps) {
   // Refresh posts periodically to update expiry states
   useEffect(() => {
     const interval = setInterval(async () => {
+      const retentionCutoff = new Date(Date.now() - TIMELINE_RETENTION_MS).toISOString();
       const { data } = await supabase
         .from("posts")
         .select("*")
-        .gte("expires_at", new Date().toISOString())
+        .gte("expires_at", retentionCutoff)
         .order("created_at", { ascending: false })
         .limit(20);
 
