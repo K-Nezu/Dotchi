@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import PostDetailClient from "./PostDetailClient";
@@ -7,9 +7,15 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
 async function getPost(id: string) {
-  const supabase = await createClient();
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("posts")
     .select("*")
     .eq("id", id)
