@@ -3,13 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
-  --primary: #e11d48;
-  --primary-light: #fecdd3;
-  --secondary: #f43f5e;
-  --accent: #e11d48;
+  --primary: #1a1a1a;
+  --primary-light: #e5e5e5;
+  --secondary: #404040;
+  --accent: #1a1a1a;
   --card: #ffffff;
   --muted: #717171;
-  --border: #ebebeb;
+  --border: #e5e5e5;
 }
 
 @theme inline {
@@ -94,4 +94,104 @@ body {
 
 .animate-reveal-flash {
   animation: reveal-flash 0.4s ease-out forwards;
+}
+
+/* Vote button ripple */
+.vote-button {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes ripple-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.4;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+.vote-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--foreground);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: ripple-expand 0.5s ease-out forwards;
+}
+
+/* Button press animation */
+@keyframes button-press {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.93);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-button-press {
+  animation: button-press 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Dot pulse animation for "迷い中" */
+@keyframes dot-pulse {
+  0%, 80%, 100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.animate-dot-1 {
+  animation: dot-pulse 1.4s infinite;
+  animation-delay: 0s;
+}
+.animate-dot-2 {
+  animation: dot-pulse 1.4s infinite;
+  animation-delay: 0.2s;
+}
+.animate-dot-3 {
+  animation: dot-pulse 1.4s infinite;
+  animation-delay: 0.4s;
+}
+
+/* Splash screen animations */
+@keyframes splash-logo {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-splash-logo {
+  animation: splash-logo 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes splash-tagline {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-splash-tagline {
+  opacity: 0;
+  animation: splash-tagline 0.5s ease-out 0.3s forwards;
 }

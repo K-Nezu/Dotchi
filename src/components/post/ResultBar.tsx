@@ -10,6 +10,7 @@ interface ResultBarProps {
   total: number;
   isWinner: boolean;
   isSelected: boolean;
+  isPosterChoice?: boolean;
 }
 
 export default function ResultBar({
@@ -19,6 +20,7 @@ export default function ResultBar({
   total,
   isWinner,
   isSelected,
+  isPosterChoice,
 }: ResultBarProps) {
   const targetPercentage = total > 0 ? Math.round((count / total) * 100) : 0;
   const [displayPercentage, setDisplayPercentage] = useState(0);
@@ -74,7 +76,7 @@ export default function ResultBar({
           </div>
           {isWinner && (
             <div
-              className="absolute bottom-0 left-0 right-0 bg-primary/25 transition-all duration-1000 ease-out"
+              className="absolute bottom-0 left-0 right-0 bg-foreground/15 transition-all duration-1000 ease-out"
               style={{ height: `${displayPercentage}%` }}
             />
           )}
@@ -93,7 +95,7 @@ export default function ResultBar({
           </span>
           {isWinner && (
             <div
-              className="absolute bottom-0 left-0 right-0 bg-primary/8 transition-all duration-1000 ease-out"
+              className="absolute bottom-0 left-0 right-0 bg-foreground/5 transition-all duration-1000 ease-out"
               style={{ height: `${displayPercentage}%` }}
             />
           )}
@@ -102,13 +104,19 @@ export default function ResultBar({
       {/* Winner badge */}
       {isWinner && total > 0 && (
         <div
-          className={`absolute top-2 right-2 bg-primary text-white text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-500 ${
+          className={`absolute top-2 right-2 bg-foreground text-white text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-500 ${
             showBadge
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-2"
           }`}
         >
           多数派
+        </div>
+      )}
+      {/* Poster's choice badge */}
+      {isPosterChoice && showBadge && (
+        <div className="absolute top-2 left-2 bg-foreground/70 text-white text-xs px-2 py-0.5 rounded-full animate-fade-in">
+          投稿者
         </div>
       )}
       {/* User's choice */}

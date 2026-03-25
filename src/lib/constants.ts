@@ -4,6 +4,9 @@ export const POST_DURATION_MS = 5 * 60 * 1000;
 /** Duration to keep expired posts on timeline in milliseconds (30 minutes) */
 export const TIMELINE_RETENTION_MS = 30 * 60 * 1000;
 
+/** Duration to keep posts in DB before deletion (24 hours) */
+export const POST_TTL_MS = 24 * 60 * 60 * 1000;
+
 /** Max question text length */
 export const MAX_QUESTION_LENGTH = 60;
 

@@ -7,7 +7,7 @@ interface WaitingOverlayProps {
   imageUrlB?: string | null;
   labelA?: string;
   labelB?: string;
-  votedChoice: "a" | "b";
+  votedChoice?: "a" | "b";
 }
 
 export default function WaitingOverlay({
@@ -46,7 +46,7 @@ export default function WaitingOverlay({
           </div>
         )}
         {votedChoice === "a" && (
-          <div className="absolute bottom-2 left-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full">
+          <div className="absolute bottom-2 left-2 bg-foreground text-white text-xs px-2 py-0.5 rounded-full">
             あなた
           </div>
         )}
@@ -79,7 +79,7 @@ export default function WaitingOverlay({
           </div>
         )}
         {votedChoice === "b" && (
-          <div className="absolute bottom-2 left-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full">
+          <div className="absolute bottom-2 left-2 bg-foreground text-white text-xs px-2 py-0.5 rounded-full">
             あなた
           </div>
         )}

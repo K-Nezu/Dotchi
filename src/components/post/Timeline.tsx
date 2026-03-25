@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Post } from "@/lib/types";
 import PostCard from "./PostCard";
 import { createClient } from "@/lib/supabase/client";
 import { TIMELINE_RETENTION_MS } from "@/lib/constants";
+import { getDeviceId } from "@/lib/device-id";
 
 interface TimelineProps {
   initialPosts: Post[];
@@ -14,6 +15,11 @@ export default function Timeline({ initialPosts }: TimelineProps) {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [votes, setVotes] = useState<Record<string, "a" | "b">>({});
   const supabase = createClient();
+  const deviceId = useRef("");
+
+  useEffect(() => {
+    deviceId.current = getDeviceId();
+  }, []);
 
   // Refresh posts periodically to update expiry states
   useEffect(() => {
@@ -69,11 +75,24 @@ export default function Timeline({ initialPosts }: TimelineProps) {
 
       setVotes((prev) => ({ ...prev, [postId]: choice }));
 
-      await fetch("/api/votes", {
+      const res = await fetch("/api/votes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ post_id: postId, choice }),
+        body: JSON.stringify({
+          post_id: postId,
+          choice,
+          device_id: deviceId.current,
+        }),
       });
+
+      // Revert if server rejected
+      if (!res.ok) {
+        setVotes((prev) => {
+          const next = { ...prev };
+          delete next[postId];
+          return next;
+        });
+      }
     },
     [votes]
   );
@@ -95,6 +114,7 @@ export default function Timeline({ initialPosts }: TimelineProps) {
           post={post}
           votedChoice={votes[post.id] ?? null}
           onVote={handleVote}
+          isMyPost={post.poster_id === deviceId.current}
         />
       ))}
     </div>

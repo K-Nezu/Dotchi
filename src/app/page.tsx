@@ -1,5 +1,6 @@
 import Header from "@/components/ui/Header";
 import Timeline from "@/components/post/Timeline";
+import SplashScreen from "@/components/ui/SplashScreen";
 import { createClient } from "@supabase/supabase-js";
 import { TIMELINE_RETENTION_MS } from "@/lib/constants";
 
@@ -22,11 +23,14 @@ export default async function Home() {
     .limit(20);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="max-w-xl mx-auto px-5 py-8">
-        <Timeline initialPosts={(posts as any[]) ?? []} />
-      </main>
-    </div>
+    <>
+      <SplashScreen />
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="max-w-xl mx-auto px-5 py-8">
+          <Timeline initialPosts={(posts as any[]) ?? []} />
+        </main>
+      </div>
+    </>
   );
 }

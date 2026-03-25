@@ -13,6 +13,8 @@ export interface Post {
   vote_count_a: number;
   vote_count_b: number;
   is_expired: boolean;
+  poster_choice: "a" | "b" | null;
+  poster_id: string | null;
 }
 
 export interface Vote {

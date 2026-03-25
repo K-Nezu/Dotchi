@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import PostDetailClient from "./PostDetailClient";
+import { POST_TTL_MS } from "@/lib/constants";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -21,6 +22,10 @@ async function getPost(id: string) {
     .eq("id", id)
     .single();
   return data;
+}
+
+function isPostExpiredFromDB(post: { created_at: string }) {
+  return Date.now() - new Date(post.created_at).getTime() > POST_TTL_MS;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -78,7 +83,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PostPage({ params }: Props) {
   const { id } = await params;
   const post = await getPost(id);
-  if (!post) notFound();
+  if (!post || isPostExpiredFromDB(post)) redirect("/");
 
   return <PostDetailClient post={post} />;
 }

@@ -37,14 +37,14 @@ export default function ProgressBar({ createdAt }: ProgressBarProps) {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs text-primary font-medium">残り時間</span>
-        <span className="text-xs font-mono text-primary font-semibold">
+        <span className="text-xs text-muted font-medium">残り時間</span>
+        <span className="text-xs font-mono text-foreground font-semibold">
           {minutes}:{seconds.toString().padStart(2, "0")}
         </span>
       </div>
-      <div className="w-full h-1.5 bg-primary-light/60 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-linear"
+          className="h-full bg-foreground/70 rounded-full transition-all duration-1000 ease-linear"
           style={{ width: `${progress}%` }}
         />
       </div>
