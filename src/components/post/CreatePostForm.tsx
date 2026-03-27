@@ -74,7 +74,6 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
       {/* Options */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">A</label>
           <textarea
             value={optionA}
             onChange={(e) => setOptionA(e.target.value)}
@@ -87,12 +86,11 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
           </p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">B</label>
           <textarea
             value={optionB}
             onChange={(e) => setOptionB(e.target.value)}
             maxLength={MAX_OPTION_TEXT_LENGTH}
-            placeholder="あっち？"
+            placeholder="こっち？"
             className="w-full rounded-lg border border-border bg-white p-3.5 text-sm resize-none h-28 placeholder:text-muted/60 focus:outline-none focus:border-foreground/40 transition-colors"
           />
           <p className="text-xs text-muted text-right mt-1">
@@ -107,7 +105,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
         disabled={!isValid || isSubmitting}
         className="w-full py-3.5 rounded-lg bg-foreground text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-foreground/80 active:animate-button-press transition-colors"
       >
-        {isSubmitting ? "投稿中..." : "世界に委ねる"}
+        {isSubmitting ? "投稿中..." : "5分間、聞いてみる"}
       </button>
     </form>
   );

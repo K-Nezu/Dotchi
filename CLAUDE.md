@@ -27,6 +27,10 @@ supabase/
   migrations/       # DBマイグレーションSQL
 ```
 
+## 開発環境
+
+- **確認用URL:** http://192.168.11.102:3000
+
 ## コマンド
 
 - `npm run dev` — 開発サーバー起動 (http://localhost:3000)

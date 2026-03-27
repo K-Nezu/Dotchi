@@ -12,6 +12,8 @@ interface DevToolsProps {
 export default function DevTools({ post, isExpired, onPostRemoved }: DevToolsProps) {
   const [loading, setLoading] = useState(false);
 
+  // Temporarily hidden for UI review
+  return null;
   const showDevTools =
     process.env.NODE_ENV !== "production" ||
     process.env.NEXT_PUBLIC_DEV_TOOLS === "true";

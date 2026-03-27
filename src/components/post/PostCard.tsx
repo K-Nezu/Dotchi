@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Post } from "@/lib/types";
-import { getAnonymousName, getAvatarColor } from "@/lib/anonymous-name";
+import { getAnonymousName, getAvatarColor, getAnonymousEmoji } from "@/lib/anonymous-name";
 import { getDeviceId } from "@/lib/device-id";
 import ProgressBar from "@/components/ui/ProgressBar";
 import VoteButton from "@/components/post/VoteButton";
@@ -10,6 +10,43 @@ import ResultBar from "@/components/post/ResultBar";
 import WaitingOverlay from "@/components/post/WaitingOverlay";
 import ShareButton from "@/components/post/ShareButton";
 import DevTools from "@/components/post/DevTools";
+
+function useNeonBorder(active: boolean) {
+  const ref = useRef<HTMLDivElement>(null);
+  const angleRef = useRef(0);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!active || !ref.current) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (ref.current) {
+        ref.current.style.borderColor = "";
+        ref.current.style.borderWidth = "";
+        ref.current.style.borderStyle = "";
+        ref.current.style.backgroundImage = "";
+        ref.current.style.backgroundOrigin = "";
+        ref.current.style.backgroundClip = "";
+      }
+      return;
+    }
+    const el = ref.current;
+    const tick = () => {
+      angleRef.current = (angleRef.current + 1.2) % 360;
+      const a = angleRef.current;
+      el.style.borderColor = "transparent";
+      el.style.borderWidth = "3px";
+      el.style.borderStyle = "solid";
+      el.style.backgroundImage = `linear-gradient(white, white), conic-gradient(from ${a}deg, #e5e5e5 0%, #e5e5e5 30%, #d4d0f0 50%, #c4b5fd 62%, #b09ae0 74%, #dba8c8 84%, #e5c4d6 92%, #e5e5e5 100%)`;
+      el.style.backgroundOrigin = "border-box";
+      el.style.backgroundClip = "padding-box, border-box";
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [active]);
+
+  return ref;
+}
 
 interface PostCardProps {
   post: Post;
@@ -27,6 +64,7 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
 
   const anonymousName = getAnonymousName(post.id);
   const avatarColor = getAvatarColor(post.id);
+  const anonymousEmoji = getAnonymousEmoji(post.id);
 
   // Countdown state: null = not counting, 3/2/1 = counting, 0 = reveal
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -72,6 +110,8 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
   const showWaiting = (hasVoted || isMyPost) && !localExpired && countdown === null;
   const showCountdown = (hasVoted || isMyPost) && countdown !== null && countdown > 0;
   const showPosterChoicePicker = isMyPost && localExpired && post.poster_choice === null;
+  const isWaitingState = showWaiting || !!showCountdown;
+  const neonRef = useNeonBorder(isWaitingState);
 
   const handlePosterChoice = async (choice: "a" | "b") => {
     await fetch("/api/posts", {
@@ -86,19 +126,29 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+    <div
+      ref={neonRef}
+      className={`bg-card rounded-2xl overflow-hidden ${isWaitingState ? '' : 'border border-border'}`}
+    >
       {/* Anonymous poster info */}
       <div className="px-5 pt-4 pb-2 flex items-center gap-2.5">
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/10"
-        >
-          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-foreground/40">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-          </svg>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/5 text-lg leading-none">
+          {anonymousEmoji}
         </div>
         <span className="text-sm font-medium text-foreground">{anonymousName}</span>
         {!localExpired && (
-          <span className="text-sm font-semibold text-foreground/70 ml-auto">
+          <span className="flex items-center gap-1.5 text-base font-bold text-foreground/70 ml-auto">
+            {isWaitingState && (
+              <span className="flex items-center gap-[2px]">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="w-[2.5px] rounded-full bg-foreground/30 animate-wave-sm block"
+                    style={{ animationDelay: `${i * 0.08}s` }}
+                  />
+                ))}
+              </span>
+            )}
             迷い中<span className="animate-dot-1">.</span><span className="animate-dot-2">.</span><span className="animate-dot-3">.</span>
           </span>
         )}
@@ -112,11 +162,6 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
           </p>
         )}
         {!localExpired && <ProgressBar createdAt={post.created_at} />}
-        {localExpired && (
-          <div className="mb-1">
-            <span className="text-xs text-muted">投票終了</span>
-          </div>
-        )}
       </div>
 
       <div className="relative grid grid-cols-2 gap-2.5 px-5 pb-3">
@@ -191,29 +236,11 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
         </div>
       )}
 
-      {/* Waiting wave animation */}
-      {(showWaiting || showCountdown) && (
-        <div className="px-5 pb-4 pt-1">
-          <div className="flex items-center justify-center gap-1.5 py-3">
-            {showCountdown ? (
-              <span className="text-xs text-foreground font-semibold">まもなく開票...</span>
-            ) : (
-              <>
-                <div className="flex items-center gap-[3px]">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-[3px] rounded-full bg-foreground/30 animate-wave"
-                      style={{
-                        animationDelay: `${i * 0.08}s`,
-                        height: "4px",
-                      }}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-muted ml-2">開票を待っています...</span>
-              </>
-            )}
+      {/* Countdown label */}
+      {showCountdown && (
+        <div className="px-5 pb-3 pt-1">
+          <div className="flex items-center justify-center py-2">
+            <span className="text-xs text-foreground font-semibold">まもなく結果が出るよ...</span>
           </div>
         </div>
       )}
@@ -221,7 +248,7 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
       {/* Poster choice picker (after results revealed) */}
       {showPosterChoicePicker && (
         <div className="px-5 pb-3 animate-fade-in">
-          <p className="text-sm font-medium text-foreground mb-2">あなたはどっちを選んだ？</p>
+          <p className="text-sm font-medium text-foreground mb-2">で、あなたはどっちにした？</p>
           <div className="grid grid-cols-2 gap-2.5">
             <button
               type="button"
@@ -245,7 +272,7 @@ export default function PostCard({ post, votedChoice, onVote, onPostRemoved, isM
       {localExpired && total > 0 && (
         <div className="px-5 pb-4 pt-1 space-y-3">
           <p className="text-xs text-muted">
-            {total}人が回答
+            {total}人が選んだよ
           </p>
           <ShareButton post={post} mode="result" />
         </div>

@@ -34,17 +34,19 @@ export default function ProgressBar({ createdAt }: ProgressBarProps) {
   const minutes = Math.floor(remaining / 60);
   const seconds = remaining % 60;
 
+  const isUrgent = remaining <= 60;
+
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs text-muted font-medium">残り時間</span>
-        <span className="text-xs font-mono text-foreground font-semibold">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs text-muted">のこり</span>
+        <span className={`text-lg font-bold font-mono tabular-nums ${isUrgent ? "text-red-500" : "text-foreground"}`}>
           {minutes}:{seconds.toString().padStart(2, "0")}
         </span>
       </div>
-      <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+      <div className="w-full h-1 bg-neutral-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-foreground/70 rounded-full transition-all duration-1000 ease-linear"
+          className={`h-full rounded-full transition-all duration-1000 ease-linear ${isUrgent ? "bg-red-400" : "bg-foreground/50"}`}
           style={{ width: `${progress}%` }}
         />
       </div>

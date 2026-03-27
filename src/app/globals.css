@@ -61,6 +61,20 @@ body {
   animation: wave 1.2s ease-in-out infinite;
 }
 
+@keyframes wave-sm {
+  0%, 100% {
+    height: 3px;
+  }
+  50% {
+    height: 14px;
+  }
+}
+
+.animate-wave-sm {
+  height: 3px;
+  animation: wave-sm 1.2s ease-in-out infinite;
+}
+
 @keyframes countdown-pop {
   0% {
     opacity: 0;
@@ -194,4 +208,14 @@ body {
 .animate-splash-tagline {
   opacity: 0;
   animation: splash-tagline 0.5s ease-out 0.3s forwards;
+}
+
+/* Neon rotating border for waiting cards */
+@keyframes neon-border-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
 }

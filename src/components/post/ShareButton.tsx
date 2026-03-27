@@ -16,8 +16,8 @@ export default function ShareButton({ post, mode = "result" }: ShareButtonProps)
     const handleLineInvite = () => {
       const postUrl = getPostUrl();
       const text = post.question
-        ? `「${post.question}」\n5分だけ答えて！\n${postUrl}`
-        : `どっちがいい？5分だけ答えて！\n${postUrl}`;
+        ? `「${post.question}」\n5分で消えるから、直感で選んで\n${postUrl}`
+        : `これどっち？5分で消えるよ\n${postUrl}`;
       const lineUrl = `https://line.me/R/share?text=${encodeURIComponent(text)}`;
       window.open(lineUrl, "_blank", "noopener,noreferrer");
     };
@@ -41,7 +41,7 @@ export default function ShareButton({ post, mode = "result" }: ShareButtonProps)
   const pctA = Math.round((post.vote_count_a / total) * 100);
   const pctB = 100 - pctA;
 
-  const shareText = `「${post.option_a_text}」${pctA}% vs 「${post.option_b_text}」${pctB}%（${total}票）\nあなたはどっち派？`;
+  const shareText = `「${post.option_a_text}」${pctA}% vs 「${post.option_b_text}」${pctB}%\n${total}人が5分で決めた結果がこれ`;
 
   const getXShareUrl = () =>
     `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(getPostUrl())}`;
@@ -56,7 +56,7 @@ export default function ShareButton({ post, mode = "result" }: ShareButtonProps)
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Dotchi - 5分で解決する2択投票",
+          title: "Dotchi - 5分間の匿名多数決",
           text: shareText,
           url: postUrl,
         });

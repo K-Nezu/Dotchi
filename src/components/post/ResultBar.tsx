@@ -57,7 +57,7 @@ export default function ResultBar({
       } ${winnerClass}`}
     >
       {imageUrl ? (
-        <div className="relative aspect-square">
+        <div className="relative aspect-[4/3]">
           <Image
             src={imageUrl}
             alt={label}
@@ -82,7 +82,7 @@ export default function ResultBar({
           )}
         </div>
       ) : (
-        <div className="aspect-square bg-neutral-50 flex flex-col items-center justify-center p-4 relative">
+        <div className="aspect-[4/3] bg-neutral-50 flex flex-col items-center justify-center p-4 relative">
           <p className={`text-sm font-medium mb-2 line-clamp-2 text-center relative z-10 ${
             isWinner ? "text-foreground" : "text-muted"
           }`}>
@@ -113,10 +113,10 @@ export default function ResultBar({
           多数派
         </div>
       )}
-      {/* Poster's choice badge */}
+      {/* Poster's choice indicator */}
       {isPosterChoice && showBadge && (
-        <div className="absolute top-2 left-2 bg-foreground/70 text-white text-xs px-2 py-0.5 rounded-full animate-fade-in">
-          投稿者
+        <div className="absolute bottom-2 right-2 bg-foreground/50 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-fade-in">
+          本人選択
         </div>
       )}
       {/* User's choice */}

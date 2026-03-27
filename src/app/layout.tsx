@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Dancing_Script } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,10 +7,16 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const dancingScript = Dancing_Script({
+  variable: "--font-logo",
+  weight: "700",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Dotchi - 5分で解決する2択投票",
+  title: "Dotchi - 5分間の匿名多数決",
   description:
-    "今この瞬間の迷いを、5分間だけ世界に放流して、直感的に解決する。",
+    "迷ったら放流。知らない誰かが5分で決めてくれる、匿名の多数決",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -38,7 +44,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${dancingScript.variable} antialiased`}>{children}</body>
     </html>
   );
 }

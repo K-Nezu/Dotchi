@@ -12,7 +12,7 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
-          <Link href="/" className="text-2xl font-bold tracking-tight text-foreground">
+          <Link href="/" className="text-3xl tracking-tight text-foreground" style={{ fontFamily: "var(--font-logo)" }}>
             Dotchi
           </Link>
           <button

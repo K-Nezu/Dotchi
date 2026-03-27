@@ -26,7 +26,7 @@ export default function WaitingOverlay({
         }`}
       >
         {imageUrlA ? (
-          <div className="relative aspect-square">
+          <div className="relative aspect-[4/3]">
             <Image
               src={imageUrlA}
               alt={labelA || "A"}
@@ -39,7 +39,7 @@ export default function WaitingOverlay({
             </div>
           </div>
         ) : (
-          <div className="aspect-square bg-neutral-50 flex items-center justify-center p-4">
+          <div className="aspect-[4/3] bg-neutral-50 flex items-center justify-center p-4">
             <p className="text-sm font-medium text-foreground line-clamp-2 text-center">
               {labelA}
             </p>
@@ -59,7 +59,7 @@ export default function WaitingOverlay({
         }`}
       >
         {imageUrlB ? (
-          <div className="relative aspect-square">
+          <div className="relative aspect-[4/3]">
             <Image
               src={imageUrlB}
               alt={labelB || "B"}
@@ -72,7 +72,7 @@ export default function WaitingOverlay({
             </div>
           </div>
         ) : (
-          <div className="aspect-square bg-neutral-50 flex items-center justify-center p-4">
+          <div className="aspect-[4/3] bg-neutral-50 flex items-center justify-center p-4">
             <p className="text-sm font-medium text-foreground line-clamp-2 text-center">
               {labelB}
             </p>

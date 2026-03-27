@@ -47,7 +47,7 @@ export default function VoteButton({
       <button
         ref={buttonRef}
         onClick={handleClick}
-        className="vote-button relative aspect-square rounded-xl overflow-hidden border border-border hover:border-foreground/30 active:animate-button-press transition-all duration-200"
+        className="vote-button relative aspect-[4/3] rounded-xl overflow-hidden border border-border hover:border-foreground/30 active:animate-button-press transition-all duration-200"
       >
         <Image
           src={imageUrl}
@@ -64,7 +64,7 @@ export default function VoteButton({
     <button
       ref={buttonRef}
       onClick={handleClick}
-      className="vote-button aspect-square rounded-xl bg-neutral-50 flex items-center justify-center p-5 text-center font-medium text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-100 active:animate-button-press transition-all duration-200"
+      className="vote-button aspect-[4/3] rounded-xl bg-neutral-50 flex items-center justify-center p-4 text-center font-medium text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-100 active:animate-button-press transition-all duration-200"
     >
       <span className="line-clamp-3 text-sm leading-relaxed">{label}</span>
     </button>
