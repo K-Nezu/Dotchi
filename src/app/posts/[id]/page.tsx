@@ -42,8 +42,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (post.question) {
     title = `${post.question} - Dotchi`;
-  } else if (post.mode === "text") {
-    title = `${post.option_a_text} vs ${post.option_b_text} - Dotchi`;
   } else {
     title = "どっちがいい？ - Dotchi";
   }
@@ -51,16 +49,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (isExpired && total > 0) {
     const pctA = Math.round((post.vote_count_a / total) * 100);
     const pctB = 100 - pctA;
-    if (post.mode === "text") {
-      description = `結果: ${post.option_a_text} ${pctA}% vs ${post.option_b_text} ${pctB}%（${total}票）`;
-    } else {
-      description = `結果: A ${pctA}% vs B ${pctB}%（${total}票）`;
-    }
+    description = post.question
+      ? `「${post.question}」の結果: A ${pctA}% vs B ${pctB}%（${total}票）`
+      : `結果: A ${pctA}% vs B ${pctB}%（${total}票）`;
   } else {
-    description = "5分間限定の2択投票。あなたはどっち派？";
+    description = "写真2枚で世界に聞く。5分間限定の匿名2択投票。";
   }
 
   const url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://dotchi.app"}/posts/${id}`;
+
+  const ogImages = post.option_a_image_url
+    ? [{ url: post.option_a_image_url, width: 800, height: 600 }]
+    : undefined;
 
   return {
     title,
@@ -71,11 +71,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url,
       siteName: "Dotchi",
       type: "website",
+      ...(ogImages && { images: ogImages }),
     },
     twitter: {
-      card: "summary",
+      card: ogImages ? "summary_large_image" : "summary",
       title,
       description,
+      ...(ogImages && { images: ogImages.map((i) => i.url) }),
     },
   };
 }

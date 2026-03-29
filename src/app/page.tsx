@@ -27,7 +27,7 @@ export default async function Home() {
       <SplashScreen />
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="max-w-xl mx-auto px-5 py-8">
+        <main className="max-w-xl mx-auto">
           <Timeline initialPosts={(posts as any[]) ?? []} />
         </main>
       </div>

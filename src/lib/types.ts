@@ -1,4 +1,4 @@
-export type PostMode = "image" | "text";
+export type PostMode = "image" | "text" | "music";
 
 export interface Post {
   id: string;
@@ -8,6 +8,14 @@ export interface Post {
   option_b_text: string | null;
   option_a_image_url: string | null;
   option_b_image_url: string | null;
+  option_a_track_id: string | null;
+  option_b_track_id: string | null;
+  option_a_artist: string | null;
+  option_b_artist: string | null;
+  option_a_preview_url: string | null;
+  option_b_preview_url: string | null;
+  option_a_artwork_url: string | null;
+  option_b_artwork_url: string | null;
   created_at: string;
   expires_at: string;
   vote_count_a: number;

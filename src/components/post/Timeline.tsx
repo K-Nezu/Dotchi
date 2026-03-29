@@ -107,7 +107,7 @@ export default function Timeline({ initialPosts }: TimelineProps) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="divide-y divide-border/60">
       {posts.map((post) => (
         <PostCard
           key={post.id}

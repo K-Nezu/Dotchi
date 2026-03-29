@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -11,7 +11,6 @@ interface BottomSheetProps {
 export default function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
   const [visible, setVisible] = useState(false);
   const [animating, setAnimating] = useState(false);
-  const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -40,24 +39,26 @@ export default function BottomSheet({ isOpen, onClose, children }: BottomSheetPr
         className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
           animating ? "opacity-100" : "opacity-0"
         }`}
-        onClick={onClose}
       />
 
-      {/* Sheet */}
+      {/* Full-screen modal (slides up from bottom) */}
       <div
-        ref={sheetRef}
-        className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl transition-transform duration-300 ease-out ${
+        className={`absolute inset-0 bg-white transition-transform duration-300 ease-out ${
           animating ? "translate-y-0" : "translate-y-full"
         }`}
-        style={{ maxHeight: "85vh" }}
       >
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-neutral-300" />
+        {/* Header */}
+        <div className="flex items-center px-5 py-4 border-b border-border">
+          <button
+            onClick={onClose}
+            className="text-sm text-muted hover:text-foreground transition-colors"
+          >
+            キャンセル
+          </button>
         </div>
 
         {/* Content */}
-        <div className="px-5 pb-8 pt-2 overflow-y-auto" style={{ maxHeight: "calc(85vh - 2rem)" }}>
+        <div className="px-5 pt-6 pb-8 overflow-y-auto" style={{ height: "calc(100vh - 57px)" }}>
           {children}
         </div>
       </div>

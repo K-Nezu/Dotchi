@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 interface ResultBarProps {
   label: string;
@@ -11,6 +10,9 @@ interface ResultBarProps {
   isWinner: boolean;
   isSelected: boolean;
   isPosterChoice?: boolean;
+  previewUrl?: string | null;
+  isPlaying?: boolean;
+  onPlayToggle?: () => void;
 }
 
 export default function ResultBar({
@@ -21,6 +23,9 @@ export default function ResultBar({
   isWinner,
   isSelected,
   isPosterChoice,
+  previewUrl,
+  isPlaying,
+  onPlayToggle,
 }: ResultBarProps) {
   const targetPercentage = total > 0 ? Math.round((count / total) * 100) : 0;
   const [displayPercentage, setDisplayPercentage] = useState(0);
@@ -48,22 +53,18 @@ export default function ResultBar({
     return () => clearInterval(timer);
   }, [targetPercentage]);
 
-  const winnerClass = isWinner ? "" : "opacity-50 grayscale-[30%]";
-
   return (
     <div
-      className={`relative rounded-xl overflow-hidden border-2 transition-all duration-500 ${
-        isSelected ? "border-foreground" : "border-transparent"
-      } ${winnerClass}`}
+      className={`relative overflow-hidden transition-all duration-500 ${
+        isWinner ? "" : "opacity-50 grayscale-[30%]"
+      }`}
     >
       {imageUrl ? (
-        <div className="relative aspect-[4/3]">
-          <Image
+        <div className="relative aspect-square">
+          <img
             src={imageUrl}
             alt={label}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 50vw, 256px"
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <div className={`absolute inset-0 flex flex-col items-center justify-center text-white ${
             isWinner ? "bg-black/30" : "bg-black/50"
@@ -76,13 +77,13 @@ export default function ResultBar({
           </div>
           {isWinner && (
             <div
-              className="absolute bottom-0 left-0 right-0 bg-foreground/15 transition-all duration-1000 ease-out"
+              className="absolute bottom-0 left-0 right-0 bg-white/15 transition-all duration-1000 ease-out"
               style={{ height: `${displayPercentage}%` }}
             />
           )}
         </div>
       ) : (
-        <div className="aspect-[4/3] bg-neutral-50 flex flex-col items-center justify-center p-4 relative">
+        <div className="aspect-square bg-neutral-50 flex flex-col items-center justify-center p-4 relative">
           <p className={`text-sm font-medium mb-2 line-clamp-2 text-center relative z-10 ${
             isWinner ? "text-foreground" : "text-muted"
           }`}>
@@ -101,27 +102,52 @@ export default function ResultBar({
           )}
         </div>
       )}
+
+      {/* Play button for music */}
+      {previewUrl && (
+        <button
+          type="button"
+          onClick={onPlayToggle}
+          className="absolute top-2.5 left-2.5 w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 active:scale-90 transition-all z-10"
+        >
+          {isPlaying ? (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 ml-0.5">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
+        </button>
+      )}
+
+      {/* Selected indicator */}
+      {isSelected && (
+        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-foreground animate-fade-in" />
+      )}
+
       {/* Winner badge */}
       {isWinner && total > 0 && (
         <div
-          className={`absolute top-2 right-2 bg-foreground text-white text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-500 ${
-            showBadge
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-2"
+          className={`absolute top-2.5 right-2.5 bg-white/90 text-foreground text-[11px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm transition-all duration-500 ${
+            showBadge ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
           }`}
         >
           多数派
         </div>
       )}
-      {/* Poster's choice indicator */}
+
+      {/* Poster's choice */}
       {isPosterChoice && showBadge && (
-        <div className="absolute bottom-2 right-2 bg-foreground/50 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-fade-in">
-          本人選択
+        <div className="absolute bottom-3 right-2.5 bg-white/70 text-foreground/70 text-[10px] px-1.5 py-0.5 rounded-full backdrop-blur-sm animate-fade-in">
+          本人
         </div>
       )}
+
       {/* User's choice */}
       {isSelected && showBadge && (
-        <div className="absolute bottom-2 left-2 bg-foreground text-white text-xs px-2 py-0.5 rounded-full animate-fade-in">
+        <div className="absolute bottom-3 left-2.5 bg-white/90 text-foreground text-[11px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm animate-fade-in">
           あなた
         </div>
       )}

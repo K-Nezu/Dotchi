@@ -1,24 +1,28 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import Image from "next/image";
 
 interface VoteButtonProps {
   label?: string;
   imageUrl?: string | null;
   onClick: () => void;
+  previewUrl?: string | null;
+  isPlaying?: boolean;
+  onPlayToggle?: () => void;
 }
 
 export default function VoteButton({
   label,
   imageUrl,
   onClick,
+  previewUrl,
+  isPlaying,
+  onPlayToggle,
 }: VoteButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      // Ripple effect from tap position
       const button = buttonRef.current;
       if (button) {
         const rect = button.getBoundingClientRect();
@@ -32,7 +36,6 @@ export default function VoteButton({
         ripple.addEventListener("animationend", () => ripple.remove());
       }
 
-      // Haptic feedback (Android/supported browsers)
       if (navigator.vibrate) {
         navigator.vibrate(50);
       }
@@ -44,19 +47,41 @@ export default function VoteButton({
 
   if (imageUrl) {
     return (
-      <button
-        ref={buttonRef}
-        onClick={handleClick}
-        className="vote-button relative aspect-[4/3] rounded-xl overflow-hidden border border-border hover:border-foreground/30 active:animate-button-press transition-all duration-200"
-      >
-        <Image
-          src={imageUrl}
-          alt="選択肢"
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 50vw, 256px"
-        />
-      </button>
+      <div className="relative">
+        <button
+          ref={buttonRef}
+          onClick={handleClick}
+          className="vote-button relative aspect-square w-full overflow-hidden active:animate-button-press transition-all duration-200"
+        >
+          <img
+            src={imageUrl}
+            alt="選択肢"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {label && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
+              <p className="text-white text-sm font-medium line-clamp-1">{label}</p>
+            </div>
+          )}
+        </button>
+        {previewUrl && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onPlayToggle?.(); }}
+            className="absolute top-2.5 left-2.5 w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 active:scale-90 transition-all"
+          >
+            {isPlaying ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 ml-0.5">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
+        )}
+      </div>
     );
   }
 
@@ -64,7 +89,7 @@ export default function VoteButton({
     <button
       ref={buttonRef}
       onClick={handleClick}
-      className="vote-button aspect-[4/3] rounded-xl bg-neutral-50 flex items-center justify-center p-4 text-center font-medium text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-100 active:animate-button-press transition-all duration-200"
+      className="vote-button aspect-square bg-neutral-50 flex items-center justify-center p-4 text-center font-medium text-foreground hover:bg-neutral-100 active:animate-button-press transition-all duration-200"
     >
       <span className="line-clamp-3 text-sm leading-relaxed">{label}</span>
     </button>

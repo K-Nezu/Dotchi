@@ -210,12 +210,16 @@ body {
   animation: splash-tagline 0.5s ease-out 0.3s forwards;
 }
 
-/* Neon rotating border for waiting cards */
-@keyframes neon-border-pulse {
+/* Breathe animation for waiting state */
+@keyframes breathe {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.3;
   }
   50% {
-    opacity: 1;
+    opacity: 0.7;
   }
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
 }

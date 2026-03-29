@@ -13,6 +13,9 @@ export const MAX_QUESTION_LENGTH = 60;
 /** Max text length per option */
 export const MAX_OPTION_TEXT_LENGTH = 50;
 
+/** Max caption length (short text accompanying image posts) */
+export const MAX_CAPTION_LENGTH = 20;
+
 /** Max image file size in bytes (2MB) */
 export const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
