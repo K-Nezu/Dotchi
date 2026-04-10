@@ -9,6 +9,7 @@ interface VoteButtonProps {
   previewUrl?: string | null;
   isPlaying?: boolean;
   onPlayToggle?: () => void;
+  isSelected?: boolean;
 }
 
 export default function VoteButton({
@@ -18,6 +19,7 @@ export default function VoteButton({
   previewUrl,
   isPlaying,
   onPlayToggle,
+  isSelected,
 }: VoteButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -51,7 +53,7 @@ export default function VoteButton({
         <button
           ref={buttonRef}
           onClick={handleClick}
-          className="vote-button relative aspect-square w-full overflow-hidden active:animate-button-press transition-all duration-200"
+          className={`vote-button relative aspect-square w-full overflow-hidden active:animate-button-press transition-all duration-200 ${isSelected ? "ring-2 ring-inset ring-foreground" : ""}`}
         >
           <img
             src={imageUrl}
@@ -89,7 +91,7 @@ export default function VoteButton({
     <button
       ref={buttonRef}
       onClick={handleClick}
-      className="vote-button aspect-square bg-neutral-50 flex items-center justify-center p-4 text-center font-medium text-foreground hover:bg-neutral-100 active:animate-button-press transition-all duration-200"
+      className={`vote-button aspect-square bg-neutral-50 flex items-center justify-center p-4 text-center font-medium text-foreground hover:bg-neutral-100 active:animate-button-press transition-all duration-200 ${isSelected ? "ring-2 ring-inset ring-foreground" : ""}`}
     >
       <span className="line-clamp-3 text-sm leading-relaxed">{label}</span>
     </button>

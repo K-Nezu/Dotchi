@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { POST_DURATION_MS } from "@/lib/constants";
 
 interface ProgressBarProps {
-  createdAt: string;
+  startAt: string;
 }
 
-export default function ProgressBar({ createdAt }: ProgressBarProps) {
+export default function ProgressBar({ startAt }: ProgressBarProps) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const start = new Date(createdAt).getTime();
+    const start = new Date(startAt).getTime();
 
     const update = () => {
       const now = Date.now();
@@ -23,12 +23,12 @@ export default function ProgressBar({ createdAt }: ProgressBarProps) {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [createdAt]);
+  }, [startAt]);
 
   const remaining = Math.max(
     0,
     Math.ceil(
-      (new Date(createdAt).getTime() + POST_DURATION_MS - Date.now()) / 1000
+      (new Date(startAt).getTime() + POST_DURATION_MS - Date.now()) / 1000
     )
   );
   const minutes = Math.floor(remaining / 60);

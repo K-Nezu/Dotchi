@@ -13,7 +13,15 @@ interface TimelineProps {
 
 export default function Timeline({ initialPosts }: TimelineProps) {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [votes, setVotes] = useState<Record<string, "a" | "b">>({});
+  const [votes, setVotes] = useState<Record<string, "a" | "b">>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("dotchi_votes");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const supabase = createClient();
   const deviceId = useRef("");
 
@@ -70,10 +78,14 @@ export default function Timeline({ initialPosts }: TimelineProps) {
   }, [supabase]);
 
   const handleVote = useCallback(
-    async (postId: string, choice: "a" | "b") => {
+    async (postId: string, choice: "a" | "b", comment?: string) => {
       if (votes[postId]) return;
 
-      setVotes((prev) => ({ ...prev, [postId]: choice }));
+      setVotes((prev) => {
+        const next = { ...prev, [postId]: choice };
+        try { localStorage.setItem("dotchi_votes", JSON.stringify(next)); } catch {}
+        return next;
+      });
 
       const res = await fetch("/api/votes", {
         method: "POST",
@@ -82,6 +94,7 @@ export default function Timeline({ initialPosts }: TimelineProps) {
           post_id: postId,
           choice,
           device_id: deviceId.current,
+          comment: comment || undefined,
         }),
       });
 
@@ -90,6 +103,7 @@ export default function Timeline({ initialPosts }: TimelineProps) {
         setVotes((prev) => {
           const next = { ...prev };
           delete next[postId];
+          try { localStorage.setItem("dotchi_votes", JSON.stringify(next)); } catch {}
           return next;
         });
       }
@@ -100,8 +114,8 @@ export default function Timeline({ initialPosts }: TimelineProps) {
   if (posts.length === 0) {
     return (
       <div className="text-center py-20 text-muted">
-        <p className="text-base font-medium text-foreground/60">いまは静か</p>
-        <p className="text-sm mt-2 text-muted">迷いができたら教えて</p>
+        <p className="text-base font-medium text-foreground/60">まだマッチがない</p>
+        <p className="text-sm mt-2 text-muted">あなたの一番を投稿してみよう</p>
       </div>
     );
   }
